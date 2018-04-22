@@ -3,9 +3,9 @@ import logo from './logo.svg';
 import './App.css';
 import openSocket from 'socket.io-client';
 import { Route,Switch } from 'react-router'
+import firebase from 'firebase'
 const socket = openSocket('http://localhost:3000');
 let init = false;
-import firebase from 'firebase'
 
 const config = {
     apiKey: "AIzaSyBBdY1PTGPFSivd0qO6Eh_sZwoiBXTq9eE",
