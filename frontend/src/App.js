@@ -26,27 +26,31 @@ class ImageVersion extends Component {
       super(props);
       this.state = {
         word: "",
-        downloadarrow: '',
+        uploadimage1:'',
+        uploadimage2:''
         }
+    }
 
-      this.getImage('downloadarrow')
-/*
-      const file = document.querySelector('#photo').files[0]
-      const name = "temp.png";
+    updateImage(num,e) {
+      let file = e.target.files[0]
+      const name = "uploadimage"+num;
+      this.setState({file:file})
+
       const metadata = {
          contentType: file.type
       };
+      let { state } = this
       const task = storage.child(name).put(file, metadata);
         task.then((snapshot) => {
           const url = snapshot.downloadURL;
           console.log(url);
-          document.querySelector('#someImageTagID').src = url;
+          state[name] = url
+          this.setState(state)
         }).catch((error) => {
           console.error(error);
         });
-        */
-
     }
+
     getImage (image) {
         let { state } = this
         storage.child(`${image}.png`).getDownloadURL().then((url) => {
@@ -60,7 +64,10 @@ class ImageVersion extends Component {
   render() {
     return (
       <div >
-       <img src={this.state.downloadarrow}/>
+       <img src={this.state.uploadimage1}/>
+      <input type="file" onChange={ this.updateImage.bind(this, '1') }/>
+       <img src={this.state.uploadimage2}/>
+      <input type="file" onChange={ this.updateImage.bind(this, '2') }/>
         <h2 >{this.state.word}</h2>
         <h2 >HERE</h2>
       </div>
