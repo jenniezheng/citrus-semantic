@@ -2,9 +2,16 @@
   text-align: center;
 }
 
-.App-logo {
+.lime {
   animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+  height: 100px;
+}
+
+.sub {
+  position: absolute; 
+  top: 50%;
+  left: 50%;
+  transform: translate(-56%, -60%);
 }
 
 .App-header {
@@ -20,6 +27,16 @@
 
 .App-intro {
   font-size: large;
+}
+
+.uploadbutton {
+  width: 100%;
+  display: inline-block;
+  cursor: pointer;
+}
+
+input[type="file"] {
+  display: none;
 }
 
 @keyframes App-logo-spin {

@@ -31,13 +31,14 @@ var server = http.createServer(function (req, res) {
 var io = require('socket.io')(server);
 
 
-
+var numcons = 0;
 var py = spawn('python', ['python/analogy.py']);
 console.log("Hi!\n");
 py.stdin.setEncoding('utf-8');
 
 io.sockets.on('connection', function (socket) {
-  console.log("new connection")
+  numcons++;
+  console.log("connection" , numcons);
   socket.on('calculateWord', function (res) {
     console.log("calculating")
     console.log(res)
@@ -57,7 +58,8 @@ io.sockets.on('connection', function (socket) {
     socket.emit('wordResult', result);
   });
   socket.on('disconnect', function () {
-    console.log("closed connection")
+    numcons--;
+    console.log("closed connection, curr: ", numcons)
   });
 });
 
@@ -66,19 +68,3 @@ io.sockets.on('connection', function (socket) {
 server.listen(process.env.PORT, process.env.IP,function(){
   console.log("App started on localhost:"+process.env.PORT);
 });
-
-    /*
-  socket.on('img' , function (imgURL) {
-    var url = imgURL.replace(/^data:image\/\w+;base64,/, "");
-    var buf = new Buffer(url, 'base64');
-    fs.writeFile('/tmp/img304806663.png', buf);
-    var py = spawn('python', ['python/classify_image.py']);
-    var results="";
-    py.stdout.on('data', function(data){
-      results+=data.toString();
-    });
-    py.stdout.on('end', function(){
-      socket.emit('result', results);
-    });
-  });
-  */

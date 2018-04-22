@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import lime from './sub-lime.png';
 import './App.css';
 import openSocket from 'socket.io-client';
 import { Route, Switch } from 'react-router'
@@ -11,7 +12,7 @@ import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 import RaisedButton from 'material-ui/RaisedButton';
 import 'semantic-ui-css/semantic.min.css';
 //import injectTapEventPlugin from 'react-tap-event-plugin';
-import { Grid,Container,Responsive,Segment,Button } from 'semantic-ui-react'
+import { Grid,Container,Responsive,Segment,Button,Header } from 'semantic-ui-react'
 
 const gridStyles = {
   root: {
@@ -21,7 +22,7 @@ const gridStyles = {
   },
   gridList: {
     width: '100%',
-    height: '80vh',
+    minHeight: '50vh',
     overflowY: 'auto',
   },
 };
@@ -153,63 +154,102 @@ class ImageVersion extends Component {
       width: '100%'
     }
     return (
-      <Container>
-        <Responsive as={Segment} minWidth={700}>
+      <Container style={{'marginTop':'3vh'}}>
+        <Responsive minWidth={700}>
           <Grid>
             <Grid.Row>
+              <Grid.Column>
+                  <Subheader style={{fontSize : '5em', textAlign:"center"}}>Sublimg</Subheader>
+                  <Subheader style={{'marginTop':'3vh', fontSize : '2em', textAlign:"center"}}>Sublime subliminal image subtraction with some zesty citrusy lime ;)</Subheader>
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
 
-              <Grid.Column tablet={5} computer={5} style={{'marginTop':'3vh'}}>
-                <GridList cols={1} cellHeight={180} style={gridStyles.gridList}>
-                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Positive</Subheader>
-                  {this.state.posImageDesc &&
-                    this.state.posImageDesc.map( (desc,index) =>
-                    <GridTile
-                      key={desc[0].description+'pos'+index}
-                      title={desc[0].description}
-                      actionIcon={<IconButton><StarBorder color="white" /></IconButton>}>
-                      <img src={this.state.posImageUrl[index]} />
-                    </GridTile>
-                  )}
-                </GridList>
+              <Grid.Column width={4} style={{'marginTop':'3vh'}}>
+                <Segment piled>
+                  <GridList cols={1} cellHeight={180} style={gridStyles.gridList}>
+                    {this.state.posImageDesc &&
+                      this.state.posImageDesc.map( (desc,index) =>
+                      <GridTile
+                        key={desc[0].description+'pos'+index}
+                        title={desc[0].description}
+                        actionIcon={<IconButton><StarBorder color="white" /></IconButton>}>
+                        <img src={this.state.posImageUrl[index]} />
+                      </GridTile>
+                    )}
+                  </GridList>
+                </Segment>
               </Grid.Column>
 
-              <Grid.Column tablet={6} computer={6} textAlign="center" style={{"margin":"auto", "display":"flex", "alignItems":"center"}}>
+              <Grid.Column width={2} textAlign="center" style={{"margin":"auto", "display":"flex", "alignItems":"center"}}>
+                <button style={{"background":"none","border":"none"}} onClick={this.getAnalogy.bind(this)}>
+                  <img src={lime} class="lime" />
+                  <Subheader class="sub" style={{fontSize : '6em'}}>-</Subheader>
+                </button>
+              </Grid.Column>
+
+              <Grid.Column width={4}  style={{'marginTop':'3vh'}}>
+                <Segment piled>
+                  <GridList cols={1} cellHeight={180} style={gridStyles.gridList}>
+                    {this.state.negImageDesc &&
+                      this.state.negImageDesc.map( (desc,index) =>
+                      <GridTile
+                        key={desc[0].description+'neg'+index}
+                        title={desc[0].description}
+                        actionIcon={<IconButton><StarBorder color="white" /></IconButton>} >
+                        <img src={this.state.negImageUrl[index]} />
+                      </GridTile>
+                    )}
+                  </GridList>
+                </Segment>
+              </Grid.Column>
+
+              <Grid.Column width={2} textAlign="center" style={{"margin":"auto", "display":"flex", "alignItems":"center"}}>
                 <div>
-                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>{this.state.word}</Subheader>
-                  <img style={imgStyle} src={this.state.image3}/>
-                  <Button content="Submit" circular size="massive" fluid onClick={this.getAnalogy.bind(this)}/>
+                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>=</Subheader>
                 </div>
               </Grid.Column>
 
-              <Grid.Column tablet={5} computer={5}  style={{'marginTop':'3vh'}}>
-                <GridList cols={1} cellHeight={180} style={gridStyles.gridList}>
-                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Negative</Subheader>
-                  {this.state.negImageDesc &&
-                    this.state.negImageDesc.map( (desc,index) =>
-                    <GridTile
-                      key={desc[0].description+'neg'+index}
-                      title={desc[0].description}
-                      actionIcon={<IconButton><StarBorder color="white" /></IconButton>} >
-                      <img src={this.state.negImageUrl[index]} />
-                    </GridTile>
-                  )}
-                </GridList>
+              <Grid.Column width={4} textAlign="center" style={{"margin":"auto", "display":"flex", "alignItems":"center"}}>
+                <div>
+                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>{this.state.word ? this.state.word : "?"}</Subheader>
+                  <img style={imgStyle} src={this.state.image3}/>
+                </div>
               </Grid.Column>
 
             </Grid.Row>
 
             <Grid.Row>
-              <Grid.Column tablet={5} computer={5} style={{'marginTop':'3vh'}}>
-                <RaisedButton primary={true}  fullWidth={true} ><input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'pos') }/></RaisedButton>
+              <Grid.Column width={4} style={{'marginTop':'3vh'}}>
+                <RaisedButton primary={true}  fullWidth={true} >
+                  <label class = "uploadbutton" >
+                    <input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'pos') }/>
+                    Add Photo
+                  </label>
+                </RaisedButton>
               </Grid.Column>
 
+<<<<<<< HEAD
               <Grid.Column tablet={6} computer={6} style={{'marginTop':'3vh'}}>
 
+=======
+              <Grid.Column width={2} />
+
+              <Grid.Column width={4} style={{'marginTop':'3vh'}}>
+                <RaisedButton primary={true}  fullWidth={true} >
+                  <label class = "uploadbutton" >
+                    <input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'neg') }/>
+                    Add Photo
+                  </label>
+                </RaisedButton>
+>>>>>>> 051f13c7c4b9a33ec755c2924dec3ec70a8122ed
+              </Grid.Column>
+              
+              <Grid.Column width={2} />
+
+              <Grid.Column width={4} style={{'marginTop':'3vh'}}>
               </Grid.Column>
 
-              <Grid.Column tablet={5} computer={5} style={{'marginTop':'3vh'}}>
-                <RaisedButton primary={true} fullWidth={true} ><input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'neg') }/></RaisedButton>
-              </Grid.Column>
             </Grid.Row>
           </Grid>
         </Responsive>
@@ -235,7 +275,7 @@ class ImageVersion extends Component {
                 )}
               </GridList>
             </Grid.Row>
-            <Grid.Row >
+            <Grid.Row>
               <GridList cols={1} cellHeight={180} style={gridStyles.gridList}  >
                 <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Negative</Subheader>
                 {this.state.negImageDesc &&
