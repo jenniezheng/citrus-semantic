@@ -175,7 +175,8 @@ class ImageVersion extends Component {
 
               <Grid.Column width={2} textAlign="center" style={{"margin":"auto", "display":"flex", "alignItems":"center"}}>
                 <button style={{"background":"none","border":"none"}} onClick={this.getAnalogy.bind(this)}>
-                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>-</Subheader>
+                  <img src={lime} class="lime" />
+                  <Subheader class="sub" style={{fontSize : '6em'}}>-</Subheader>
                 </button>
               </Grid.Column>
 
