@@ -55,16 +55,13 @@ class ImageVersion extends Component {
   }
 
   updateFirebase = (type, e) => {
-    let file = e.target.files[0]
-    if(!file)
-      return
+    let file = e.target.files[0];
+    if(!file) return;
     const name = "uploadimage"+this.state.posCount;
     const metadata = {
        contentType: file.type
     };
-    let { state } = this
-    if(!file)
-      return
+    let { state } = this;
     try {
       const task = storage.child(name).put(file, metadata);
       task.then((snapshot) => {
@@ -72,14 +69,14 @@ class ImageVersion extends Component {
         console.log(url);
         state[type+'ImageUrl'].push(url)
         state[type+'Count']+=1;
-        this.setState(state)
+        this.setState(state);
         this.describeImage(type, e);
       }).catch((error) => {
         console.error(error);
       });
     }
     catch(e){
-        console.log("Found upload error")
+      console.log("Found upload error");
     }
   }
 
@@ -111,8 +108,8 @@ class ImageVersion extends Component {
     .then(response => response.json())
     .then(json => {
         let arr = json['responses'][0]['labelAnnotations'];
-        let { state } = this
-        state[type+'ImageDesc'].push(arr)
+        let { state } = this;
+        state[type+'ImageDesc'].push(arr);
         this.setState(state)
       })
     .catch(error => console.log(error));
@@ -152,111 +149,106 @@ class ImageVersion extends Component {
 
   render() {
     let imgStyle={
-        width: '100%'
+      width: '100%'
     }
     return (
-     <Container >
-            <Responsive as={Segment} minWidth={700} >
-               <Grid >
-            <Grid.Row >
+      <Container>
+        <Responsive as={Segment} minWidth={700}>
+          <Grid>
+            <Grid.Row>
 
-                <Grid.Column tablet={5} computer={5} style={{'marginTop':'3vh'}}>
-                <GridList cols={1} cellHeight={180} style={gridStyles.gridList}  >
-
-                <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Positive</Subheader>
-                    { this.state.posImageDesc.map( (desc,index) =>
-                        <GridTile
-                          key={desc[0].description+'pos'+index}
-                          title={desc[0].description}
-                          actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
-                        >
-                          <img src={this.state.posImageUrl[index]} />
-                        </GridTile>
-                    )}
-              </GridList>
-
+              <Grid.Column tablet={5} computer={5} style={{'marginTop':'3vh'}}>
+                <GridList cols={1} cellHeight={180} style={gridStyles.gridList}>
+                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Positive</Subheader>
+                  {this.state.posImageDesc &&
+                    this.state.posImageDesc.map( (desc,index) =>
+                    <GridTile
+                      key={desc[0].description+'pos'+index}
+                      title={desc[0].description}
+                      actionIcon={<IconButton><StarBorder color="white" /></IconButton>}>
+                      <img src={this.state.posImageUrl[index]} />
+                    </GridTile>
+                  )}
+                </GridList>
               </Grid.Column>
+
               <Grid.Column tablet={6} computer={6} style={{'marginTop':'3vh'}}>
                 <Subheader style={{fontSize : '4em', textAlign : 'center'}}>{this.state.word}</Subheader>
-                <img style={imgStyle}  src={this.state.image3}/>
-                  </Grid.Column>
+                <img style={imgStyle} src={this.state.image3}/>
+              </Grid.Column>
+
               <Grid.Column tablet={5} computer={5}  style={{'marginTop':'3vh'}}>
-                  <GridList cols={1} cellHeight={180} style={gridStyles.gridList}  >
-                <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Negative</Subheader>
-                    { this.state.negImageDesc.map( (desc,index) =>
-                        <GridTile
-                          key={desc[0].description+'neg'+index}
-                          title={desc[0].description}
-                          actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
-                        >
-                          <img  src={this.state.negImageUrl[index]} />
-                        </GridTile>
-                    )}
-              </GridList>
+                <GridList cols={1} cellHeight={180} style={gridStyles.gridList}>
+                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Negative</Subheader>
+                  {this.state.negImageDesc &&
+                    this.state.negImageDesc.map( (desc,index) =>
+                    <GridTile
+                      key={desc[0].description+'neg'+index}
+                      title={desc[0].description}
+                      actionIcon={<IconButton><StarBorder color="white" /></IconButton>} >
+                      <img  src={this.state.negImageUrl[index]} />
+                    </GridTile>
+                  )}
+                </GridList>
               </Grid.Column>
 
             </Grid.Row>
 
-            <Grid.Row >
-             <Grid.Column tablet={5} computer={5} style={{'marginTop':'3vh'}}>
-             <RaisedButton primary={true}  fullWidth={true} ><input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'pos') }/></RaisedButton>
+            <Grid.Row>
+              <Grid.Column tablet={5} computer={5} style={{'marginTop':'3vh'}}>
+                <RaisedButton primary={true}  fullWidth={true} ><input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'pos') }/></RaisedButton>
               </Grid.Column>
 
-            <Grid.Column  tablet={6} computer={6} computer={6} style={{'marginTop':'3vh'}}>
-             <RaisedButton label="Submit" fullWidth={true} secondary={true} onClick={this.getAnalogy.bind(this)}/>
-            </Grid.Column>
-
-            <Grid.Column tablet={5} computer={5} style={{'marginTop':'3vh'}}>
-              <RaisedButton primary={true} fullWidth={true} ><input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'neg') }/></RaisedButton>
-             </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Responsive>
-
-          <Responsive as={Segment} maxWidth={699} >
-              <Grid >
-            <Grid.Row >
-                <Subheader style={{fontSize : '4em', textAlign : 'center'}}>{this.state.word}</Subheader>
-                <img style={imgStyle}  src={this.state.image3}/>
+              <Grid.Column  tablet={6} computer={6} style={{'marginTop':'3vh'}}>
                 <RaisedButton label="Submit" fullWidth={true} secondary={true} onClick={this.getAnalogy.bind(this)}/>
-          </Grid.Row>
-          <Grid.Row >
-                <GridList cols={1} cellHeight={180} style={gridStyles.gridList}  >
+              </Grid.Column>
 
-                <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Positive</Subheader>
-                    { this.state.posImageDesc.map( (desc,index) =>
-                        <GridTile
-                          key={desc[0].description+'pos'+index}
-                          title={desc[0].description}
-                          actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
-                        >
-                          <img src={this.state.posImageUrl[index]} />
-                        </GridTile>
-                    )}
-              </GridList>
-              </Grid.Row>
-                <Grid.Row >
-                  <GridList cols={1} cellHeight={180} style={gridStyles.gridList}  >
-                <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Negative</Subheader>
-                    { this.state.negImageDesc.map( (desc,index) =>
-                        <GridTile
-                          key={desc[0].description+'neg'+index}
-                          title={desc[0].description}
-                          actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
-                        >
-                          <img  src={this.state.negImageUrl[index]} />
-                        </GridTile>
-                    )}
-              </GridList>
-              <RaisedButton primary={true} fullWidth={true} ><input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'neg') }/></RaisedButton>
-
+              <Grid.Column tablet={5} computer={5} style={{'marginTop':'3vh'}}>
+                <RaisedButton primary={true} fullWidth={true} ><input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'neg') }/></RaisedButton>
+              </Grid.Column>
             </Grid.Row>
           </Grid>
         </Responsive>
 
-
-  </Container>
-
+        <Responsive as={Segment} maxWidth={699} >
+          <Grid>
+            <Grid.Row>
+              <Subheader style={{fontSize : '4em', textAlign : 'center'}}>{this.state.word}</Subheader>
+              <img style={imgStyle}  src={this.state.image3}/>
+              <RaisedButton label="Submit" fullWidth={true} secondary={true} onClick={this.getAnalogy.bind(this)}/>
+            </Grid.Row>
+            <Grid.Row>
+              <GridList cols={1} cellHeight={180} style={gridStyles.gridList}  >
+                <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Positive</Subheader>
+                {this.state.posImageDesc &&
+                  this.state.posImageDesc.map( (desc,index) =>
+                  <GridTile
+                    key={desc[0].description+'pos'+index}
+                    title={desc[0].description}
+                    actionIcon={<IconButton><StarBorder color="white" /></IconButton>}>
+                    <img src={this.state.posImageUrl[index]} />
+                  </GridTile>
+                )}
+              </GridList>
+            </Grid.Row>
+            <Grid.Row >
+              <GridList cols={1} cellHeight={180} style={gridStyles.gridList}  >
+                <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Negative</Subheader>
+                {this.state.negImageDesc &&
+                  this.state.negImageDesc.map( (desc,index) =>
+                  <GridTile
+                    key={desc[0].description+'neg'+index}
+                    title={desc[0].description}
+                    actionIcon={<IconButton><StarBorder color="white" /></IconButton>} >
+                    <img  src={this.state.negImageUrl[index]} />
+                  </GridTile>
+                )}
+              </GridList>
+              <RaisedButton primary={true} fullWidth={true} ><input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'neg') }/></RaisedButton>
+            </Grid.Row>
+          </Grid>
+        </Responsive>
+      </Container>
     );
   }
 }
