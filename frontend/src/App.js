@@ -4,6 +4,24 @@ import './App.css';
 import openSocket from 'socket.io-client';
 import { Route,Switch } from 'react-router'
 import firebase from 'firebase'
+import {GridList, GridTile} from 'material-ui/GridList';
+import IconButton from 'material-ui/IconButton';
+import Subheader from 'material-ui/Subheader';
+import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+
+
+const gridStyles = {
+  root: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+  },
+  gridList: {
+    width: 500,
+    height: 450,
+    overflowY: 'auto',
+  },
+};
 
 
 const config = {
@@ -26,18 +44,21 @@ class ImageVersion extends Component {
       super(props);
       this.state = {
         word: "",
-        uploadimage1:'',
-        wordsimage1:[],
+        posImageDesc:[],
+        posImageUrl:[],
+        posCount:0,
+        negImageDesc:[],
+        negImageUrl:[],
+        negCount:0,
         uploadimage2:'',
         wordsimage2:[],
         image3:[]
         }
     }
 
-    updateImage(num,e) {
+    updateFirebase = (type, e) => {
       let file = e.target.files[0]
-      const name = "uploadimage"+num;
-      this.setState({file:file})
+      const name = "uploadimage"+this.state.posCount;
       const metadata = {
          contentType: file.type
       };
@@ -46,20 +67,24 @@ class ImageVersion extends Component {
         task.then((snapshot) => {
           const url = snapshot.downloadURL;
           console.log(url);
-          state[name] = url
+          state[type+'ImageUrl'].push(url)
+          state[type+'Count']+=1;
           this.setState(state)
+          this.describeImage(type, e);
         }).catch((error) => {
           console.error(error);
         });
     }
 
-    googleRecognizeImage(num,e,url){
+    describeImage = (type, e) => {
+        let arrtype = this.state[type+'ImageUrl'];
+
         let req= {
         "requests": [
             {
               "image": {
                 "source": {
-                  "imageUri": url
+                  "imageUri": arrtype[arrtype.length-1]
                 }
               },
               "features": [
@@ -83,11 +108,12 @@ class ImageVersion extends Component {
         .then(json =>{
             let arr = json['responses'][0]['labelAnnotations'];
             let { state } = this
-            state['wordsimage'+num] = arr
+            state[type+'ImageDesc'].push(arr)
             this.setState(state)
           })
         .catch(error => console.log(error));
     }
+
     search = (term) => {
         fetch('https://www.googleapis.com/customsearch/v1?key=AIzaSyCVNcHkdrsOsgzmpgCWtr_4tPcEo2-U2kk&cx=002590090237152809819:yqtwpa9qvr0&q='+term+'&searchType=image')
        .then(function(response) {
@@ -104,25 +130,27 @@ class ImageVersion extends Component {
           });
       }
 
-    uploadImage(num,e){
-        this.updateImage(num,e);
-        this.getImage(num,e);
-    }
-
-    getImage (num,e) {
+    getImage = (num,e) => {
         let { state } = this
         storage.child('uploadimage'+num).getDownloadURL().then( url =>
             this.googleRecognizeImage(num,e,url))
     }
 
-   getAnalogy = () => {
+   getAnalogy = (e) => {
         alert("getting analogy");
-        let pos=this.state.wordsimage1[0].description;
-        let neg=this.state.wordsimage2[0].description;
+         let pos = ''
+         this.state.posImageDesc.forEach(desc =>
+            pos+=desc[0].description  )
+         let neg = ''
+        this.state.negImageDesc.forEach(desc =>
+            neg+=desc[0].description )
+        alert(pos)
+        alert(neg)
         socket.emit('calculateWord',{pos:pos,neg:neg});
         if(!init){
             socket.on("wordResult", data =>{
                 alert("Received data",data)
+                var data = data.replace(/\n|\r/g, "");
                 this.setState({word:data})
                 this.search(data)
             });
@@ -133,17 +161,36 @@ class ImageVersion extends Component {
   render() {
     return (
       <div >
-      { this.state.wordsimage1.map(word => { return ( <p > {word.description}  </p> );}) }
+      <GridList cellHeight={180} style={gridStyles.gridList}  >
+            { this.state.posImageDesc.map( (desc,index) =>
+                <GridTile
+                  key={desc[0].description+'pos'+index}
+                  title={desc[0].description}
+                  actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
+                >
+                  <img style={{width:'300px'}} src={this.state.posImageUrl[index]} />
+                </GridTile>
+            )}
+      </GridList>
 
-       <img style={{width:'300px'}} src={this.state.uploadimage1}/>
-      <input type="file" onChange={ this.uploadImage.bind(this, '1') }/>
+      <input type="file" onChange={ this.updateFirebase.bind(this,'pos') }/>
 
-      { this.state.wordsimage2.map(word => { return ( <p > {word.description}  </p> );}) }
-       <img style={{width:'300px'}} src={this.state.uploadimage2}/>
-      <input type="file" onChange={ this.uploadImage.bind(this, '2') }/>
+
+        <GridList cellHeight={180} style={gridStyles.gridList}  >
+            { this.state.negImageDesc.map( (desc,index) =>
+                <GridTile
+                  key={desc[0].description+'neg'+index}
+                  title={desc[0].description}
+                  actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
+                >
+                  <img style={{width:'300px'}} src={this.state.negImageUrl[index]} />
+                </GridTile>
+            )}
+      </GridList>
+      <input type="file" onChange={ this.updateFirebase.bind(this,'neg') }/>
         <h2 >{this.state.word}</h2>
         <img style={{width:'300px'}} src={this.state.image3}/>
-        <button onClick={ this.getAnalogy} >Submit</button>
+        <button onClick={ this.getAnalogy.bind(this)} >Submit</button>
       </div>
     );
   }
