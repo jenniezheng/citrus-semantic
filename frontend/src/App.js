@@ -4,8 +4,7 @@ import './App.css';
 import openSocket from 'socket.io-client';
 import { Route,Switch } from 'react-router'
 import firebase from 'firebase'
-const socket = openSocket('http://localhost:3000');
-let init = false;
+
 
 const config = {
     apiKey: "AIzaSyBBdY1PTGPFSivd0qO6Eh_sZwoiBXTq9eE",
@@ -16,47 +15,58 @@ const config = {
     messagingSenderId: "727493500579"
 };
 firebase.initializeApp(config);
+const storage = firebase.storage().ref()
+//const socket = openSocket('http://localhost:3000');
+let init = false;
+
 
 
 class ImageVersion extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        word: ""
-      };
-    }
-    getAnalogy(){
-        let myself=this;
-        alert("getting analogy");
-        let pos=document.getElementById('pos').value;
-        let neg=document.getElementById('neg').value;
-        socket.emit('calculateWord',{pos:pos,neg:neg});
-        if(!init){
-            socket.on("wordResult", function (data){
-                myself.setState({word:data})
-            });
-            init = true;
+        word: "",
+        downloadarrow: '',
         }
+
+      this.getImage('downloadarrow')
+
+      const file = document.querySelector('#photo').files[0]
+      const name = "temp.png";
+      const metadata = {
+         contentType: file.type
+      };
+      const task = storage.child(name).put(file, metadata);
+        task.then((snapshot) => {
+          const url = snapshot.downloadURL;
+          console.log(url);
+          document.querySelector('#someImageTagID').src = url;
+        }).catch((error) => {
+          console.error(error);
+        });
+
+    }
+    getImage (image) {
+        let { state } = this
+        storage.child(`${image}.png`).getDownloadURL().then((url) => {
+          state[image] = url
+          this.setState(state)
+        }).catch((error) => {
+          // Handle any errors
+        })
     }
 
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to Calculator</h1>
-        </header>
+      <div >
+       <img src={this.state.downloadarrow}/>
         <h2 >{this.state.word}</h2>
-    <form action="#" onSubmit={this.getAnalogy.bind(this)}>
-      Pos: <input type="text" id="pos" defaultValue="cat dog" /><br/>
-      Neg: <input type="text" id="neg" defaultValue="prince" /><br/>
-      <input type="submit" value="Submit"/>
-    </form>
+        <h2 >HERE</h2>
       </div>
     );
   }
 }
-
+/*
 
 class TextVersion extends Component {
     constructor(props) {
@@ -93,16 +103,16 @@ class TextVersion extends Component {
   }
 }
 
-
+*/
 
 class App extends Component {
   render() {
     return (
 
     <Switch>
-      <Route path='/text' component={TextVersion}/>
+      <Route path='/text' component={ImageVersion}/>
       <Route path='/image' component={ImageVersion}/>
-      <Route path='/' component={TextVersion}/>
+      <Route path='/' component={ImageVersion}/>
     </Switch>
 
     );
