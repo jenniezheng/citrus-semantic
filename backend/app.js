@@ -65,7 +65,15 @@ io.sockets.on('connection', function (socket) {
       console.log("result: "+result);
       socket.emit('wordResult', result);
    });
+
+   socket.on('disconnect', function () {
+      py.stdin.pause();
+      py.kill();
+  });
+
 });
+
+
 
 server.listen(process.env.PORT, process.env.IP,function(){
   console.log("App started on localhost:"+process.env.PORT);

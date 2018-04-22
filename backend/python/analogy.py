@@ -10,7 +10,10 @@ while True:
         posi=[]
     if(negi[0]==''):
         negi=[]
-    indexes, metrics = model.analogy(pos=posi, neg=negi, n=3)
-    res= model.generate_response(indexes, metrics).tolist()
-    print(res[0][0]+ " "+res[1][0]+" "+res[2][0])
+    try:
+        indexes, metrics = model.analogy(pos=posi, neg=negi, n=3)
+        res= model.generate_response(indexes, metrics).tolist()
+        print(res[0][0]+ " "+res[1][0]+" "+res[2][0])
+    except:
+        print("fail fail fail")
     sys.stdout.flush()

@@ -16,7 +16,7 @@ const config = {
 };
 firebase.initializeApp(config);
 const storage = firebase.storage().ref()
-//const socket = openSocket('http://localhost:3000');
+const socket = openSocket('http://localhost:3000');
 let init = false;
 
 
@@ -29,7 +29,8 @@ class ImageVersion extends Component {
         uploadimage1:'',
         wordsimage1:[],
         uploadimage2:'',
-        wordsimage2:[]
+        wordsimage2:[],
+        image3:[]
         }
     }
 
@@ -37,7 +38,6 @@ class ImageVersion extends Component {
       let file = e.target.files[0]
       const name = "uploadimage"+num;
       this.setState({file:file})
-
       const metadata = {
          contentType: file.type
       };
@@ -88,7 +88,21 @@ class ImageVersion extends Component {
           })
         .catch(error => console.log(error));
     }
-
+    search = (term) => {
+        fetch('https://www.googleapis.com/customsearch/v1?key=AIzaSyCVNcHkdrsOsgzmpgCWtr_4tPcEo2-U2kk&cx=002590090237152809819:yqtwpa9qvr0&q='+term+'&searchType=image')
+       .then(function(response) {
+            return response.json();
+      })
+      .then(myJson => {
+            let { state } = this
+            alert(myJson)
+            if(myJson.items){
+                state['image3'] = myJson.items[0].link
+                this.setState(state)
+                console.log( myJson.items[0].link)
+            }
+          });
+      }
 
     uploadImage(num,e){
         this.updateImage(num,e);
@@ -101,44 +115,16 @@ class ImageVersion extends Component {
             this.googleRecognizeImage(num,e,url))
     }
 
-  render() {
-    return (
-      <div >
-      { this.state.wordsimage1.map(word => { return ( <p > {word.description}  </p> );}) }
-
-       <img src={this.state.uploadimage1}/>
-      <input type="file" onChange={ this.uploadImage.bind(this, '1') }/>
-
-      { this.state.wordsimage2.map(word => { return ( <p > {word.description}  </p> );}) }
-       <img src={this.state.uploadimage2}/>
-      <input type="file" onChange={ this.uploadImage.bind(this, '2') }/>
-        <h2 >{this.state.word}</h2>
-        <button onClick={ this.googleRecognizeImage.bind(this, '1')} >Submit</button>
-      </div>
-    );
-  }
-}
-
-//custom search :
-// AIzaSyCVNcHkdrsOsgzmpgCWtr_4tPcEo2-U2kk
-/*
-
-class TextVersion extends Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        word: ""
-      };
-    }
-    getAnalogy(){
-        let myself=this;
+   getAnalogy = () => {
         alert("getting analogy");
-        let pos=document.getElementById('pos').value;
-        let neg=document.getElementById('neg').value;
+        let pos=this.state.wordsimage1[0].description;
+        let neg=this.state.wordsimage2[0].description;
         socket.emit('calculateWord',{pos:pos,neg:neg});
         if(!init){
-            socket.on("wordResult", function (data){
-                myself.setState({word:data})
+            socket.on("wordResult", data =>{
+                alert("Received data",data)
+                this.setState({word:data})
+                this.search(data)
             });
             init = true;
         }
@@ -147,18 +133,21 @@ class TextVersion extends Component {
   render() {
     return (
       <div >
+      { this.state.wordsimage1.map(word => { return ( <p > {word.description}  </p> );}) }
+
+       <img style={{width:'300px'}} src={this.state.uploadimage1}/>
+      <input type="file" onChange={ this.uploadImage.bind(this, '1') }/>
+
+      { this.state.wordsimage2.map(word => { return ( <p > {word.description}  </p> );}) }
+       <img style={{width:'300px'}} src={this.state.uploadimage2}/>
+      <input type="file" onChange={ this.uploadImage.bind(this, '2') }/>
         <h2 >{this.state.word}</h2>
-    <form action="#" onSubmit={this.getAnalogy.bind(this)}>
-      Pos: <input type="text" id="pos" defaultValue="cat dog" /><br/>
-      Neg: <input type="text" id="neg" defaultValue="prince" /><br/>
-      <input type="submit" value="Submit"/>
-    </form>
+        <img style={{width:'300px'}} src={this.state.image3}/>
+        <button onClick={ this.getAnalogy} >Submit</button>
       </div>
     );
   }
 }
-
-*/
 
 class App extends Component {
   render() {
