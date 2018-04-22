@@ -12,7 +12,7 @@ import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 import RaisedButton from 'material-ui/RaisedButton';
 import 'semantic-ui-css/semantic.min.css';
 //import injectTapEventPlugin from 'react-tap-event-plugin';
-import { Grid,Container,Responsive,Segment,Button } from 'semantic-ui-react'
+import { Grid,Container,Responsive,Segment,Button,Header } from 'semantic-ui-react'
 
 const gridStyles = {
   root: {
@@ -22,7 +22,7 @@ const gridStyles = {
   },
   gridList: {
     width: '100%',
-    height: '80vh',
+    minHeight: '50vh',
     overflowY: 'auto',
   },
 };
@@ -153,24 +153,31 @@ class ImageVersion extends Component {
       width: '100%'
     }
     return (
-      <Container>
-        <Responsive as={Segment} minWidth={700}>
+      <Container style={{'marginTop':'3vh'}}>
+        <Responsive minWidth={700}>
           <Grid>
+            <Grid.Row>
+              <Grid.Column>
+                  <Subheader style={{fontSize : '5em', textAlign:"center"}}>Sublimg</Subheader>
+                  <Subheader style={{'marginTop':'3vh', fontSize : '2em', textAlign:"center"}}>Sublime subliminal image subtraction with some zesty citrusy lime ;)</Subheader>
+              </Grid.Column>
+            </Grid.Row>
             <Grid.Row>
 
               <Grid.Column width={4} style={{'marginTop':'3vh'}}>
-                <GridList cols={1} cellHeight={180} style={gridStyles.gridList}>
-                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Positive</Subheader>
-                  {this.state.posImageDesc &&
-                    this.state.posImageDesc.map( (desc,index) =>
-                    <GridTile
-                      key={desc[0].description+'pos'+index}
-                      title={desc[0].description}
-                      actionIcon={<IconButton><StarBorder color="white" /></IconButton>}>
-                      <img src={this.state.posImageUrl[index]} />
-                    </GridTile>
-                  )}
-                </GridList>
+                <Segment piled>
+                  <GridList cols={1} cellHeight={180} style={gridStyles.gridList}>
+                    {this.state.posImageDesc &&
+                      this.state.posImageDesc.map( (desc,index) =>
+                      <GridTile
+                        key={desc[0].description+'pos'+index}
+                        title={desc[0].description}
+                        actionIcon={<IconButton><StarBorder color="white" /></IconButton>}>
+                        <img src={this.state.posImageUrl[index]} />
+                      </GridTile>
+                    )}
+                  </GridList>
+                </Segment>
               </Grid.Column>
 
               <Grid.Column width={2} textAlign="center" style={{"margin":"auto", "display":"flex", "alignItems":"center"}}>
@@ -181,18 +188,19 @@ class ImageVersion extends Component {
               </Grid.Column>
 
               <Grid.Column width={4}  style={{'marginTop':'3vh'}}>
-                <GridList cols={1} cellHeight={180} style={gridStyles.gridList}>
-                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Negative</Subheader>
-                  {this.state.negImageDesc &&
-                    this.state.negImageDesc.map( (desc,index) =>
-                    <GridTile
-                      key={desc[0].description+'neg'+index}
-                      title={desc[0].description}
-                      actionIcon={<IconButton><StarBorder color="white" /></IconButton>} >
-                      <img src={this.state.negImageUrl[index]} />
-                    </GridTile>
-                  )}
-                </GridList>
+                <Segment piled>
+                  <GridList cols={1} cellHeight={180} style={gridStyles.gridList}>
+                    {this.state.negImageDesc &&
+                      this.state.negImageDesc.map( (desc,index) =>
+                      <GridTile
+                        key={desc[0].description+'neg'+index}
+                        title={desc[0].description}
+                        actionIcon={<IconButton><StarBorder color="white" /></IconButton>} >
+                        <img src={this.state.negImageUrl[index]} />
+                      </GridTile>
+                    )}
+                  </GridList>
+                </Segment>
               </Grid.Column>
 
               <Grid.Column width={2} textAlign="center" style={{"margin":"auto", "display":"flex", "alignItems":"center"}}>
@@ -203,7 +211,7 @@ class ImageVersion extends Component {
 
               <Grid.Column width={4} textAlign="center" style={{"margin":"auto", "display":"flex", "alignItems":"center"}}>
                 <div>
-                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>{this.state.word}</Subheader>
+                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>{this.state.word ? this.state.word : "?"}</Subheader>
                   <img style={imgStyle} src={this.state.image3}/>
                 </div>
               </Grid.Column>
