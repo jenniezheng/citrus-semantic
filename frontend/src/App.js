@@ -7,7 +7,9 @@ import {GridList, GridTile} from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
 import Subheader from 'material-ui/Subheader';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
-
+import 'semantic-ui-css/semantic.min.css';
+//import injectTapEventPlugin from 'react-tap-event-plugin';
+import { Grid } from 'semantic-ui-react'
 
 const gridStyles = {
   root: {
@@ -16,8 +18,8 @@ const gridStyles = {
     justifyContent: 'space-around',
   },
   gridList: {
-    width: 500,
-    height: 450,
+    width: '100%',
+    height: '80vh',
     overflowY: 'auto',
   },
 };
@@ -150,8 +152,12 @@ class ImageVersion extends Component {
 
   render() {
     return (
-      <div >
-      <GridList cellHeight={180} style={gridStyles.gridList}  >
+    <Grid >
+    <Grid.Row>
+      <Grid.Column mobile={16} tablet={16} computer={5}>
+        <GridList cellHeight={180} style={gridStyles.gridList}  >
+
+        <Subheader>Positive</Subheader>
             { this.state.posImageDesc.map( (desc,index) =>
                 <GridTile
                   key={desc[0].description+'pos'+index}
@@ -162,11 +168,16 @@ class ImageVersion extends Component {
                 </GridTile>
             )}
       </GridList>
-
       <input type="file" onChange={ this.updateFirebase.bind(this,'pos') }/>
-
-
-        <GridList cellHeight={180} style={gridStyles.gridList}  >
+      </Grid.Column>
+      <Grid.Column mobile={16} tablet={16} computer={5}>
+        <h2 >{this.state.word}</h2>
+        <img style={{width:'300px'}} src={this.state.image3}/>
+        <button onClick={this.getAnalogy.bind(this)}>Submit</button>
+      </Grid.Column>
+      <Grid.Column mobile={16} tablet={16} computer={5}>
+          <GridList cellHeight={180} style={gridStyles.gridList}  >
+          <Subheader>Negative</Subheader>
             { this.state.negImageDesc.map( (desc,index) =>
                 <GridTile
                   key={desc[0].description+'neg'+index}
@@ -178,10 +189,9 @@ class ImageVersion extends Component {
             )}
       </GridList>
       <input type="file" onChange={ this.updateFirebase.bind(this,'neg') }/>
-        <h2 >{this.state.word}</h2>
-        <img style={{width:'300px'}} src={this.state.image3}/>
-        <button onClick={this.getAnalogy.bind(this)}>Submit</button>
-      </div>
+      </Grid.Column>
+    </Grid.Row>
+  </Grid>
     );
   }
 }
@@ -190,7 +200,6 @@ class App extends Component {
   render() {
     return (
       <Switch>
-        <Route path='/text' component={ImageVersion}/>
         <Route path='/image' component={ImageVersion}/>
         <Route path='/' component={ImageVersion}/>
       </Switch>

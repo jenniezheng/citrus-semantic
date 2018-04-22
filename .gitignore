@@ -3,3 +3,4 @@ ideas
 data/glove*
 data/nounlist.txt
 data/convertvec
+node_modules
