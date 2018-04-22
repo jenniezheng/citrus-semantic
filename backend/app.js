@@ -55,6 +55,7 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('calculateWord' , function (res) {
     console.log("calculating")
+    console.log(res)
     py.stdin.write(res['pos']+'\n');
     py.stdin.write(res['neg']+'\n');
   });
@@ -70,12 +71,12 @@ io.sockets.on('connection', function (socket) {
       console.log("result: "+result);
       socket.emit('wordResult', result);
    });
-
+/*
    socket.on('disconnect', function () {
       py.stdin.pause();
       py.kill();
   });
-
+*/
 });
 
 

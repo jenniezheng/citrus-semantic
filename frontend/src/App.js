@@ -46,12 +46,14 @@ class ImageVersion extends Component {
         negImageDesc:[],
         negImageUrl:[],
         negCount:0,
-        image3:[]
+        image3:''
         }
     }
 
     updateFirebase = (type, e) => {
       let file = e.target.files[0]
+      if(!file)
+        return
       const name = "uploadimage"+this.state.posCount;
       const metadata = {
          contentType: file.type
@@ -105,47 +107,10 @@ class ImageVersion extends Component {
             let { state } = this
             state[type+'ImageDesc'].push(arr)
             this.setState(state)
-            this.googleRecognizeImage(type)
           })
         .catch(error => console.log(error));
     }
 
-  googleRecognizeImage = (type, e) => {
-    let arrtype = this.state[type+'ImageUrl']
-    let req= {
-      "requests": [
-        {
-          "image": {
-            "source": {
-              "imageUri": arrtype[arrtype.length-1]
-            }
-          },
-          "features": [
-            {
-              "type": "LABEL_DETECTION",
-               "maxResults":4
-            }
-          ]
-        }
-      ]
-    }
-    fetch('https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDZnJDd_m3NXTSUCjThtmNigbMMrZiepME', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(req)
-    })
-    .then(response => response.json())
-    .then(json => {
-      let arr = json['responses'][0]['labelAnnotations'];
-      let { state } = this;
-      state[type+'ImageDesc'].push(arr);
-      this.setState(state);
-    })
-    .catch(error => console.log(error));
-  }
 
   search = (term) => {
     fetch('https://www.googleapis.com/customsearch/v1?key=AIzaSyCVNcHkdrsOsgzmpgCWtr_4tPcEo2-U2kk&cx=002590090237152809819:yqtwpa9qvr0&q='+term+'&searchType=image')
@@ -162,15 +127,20 @@ class ImageVersion extends Component {
    getAnalogy = (e) => {
      alert("getting analogy");
      let pos = ''
-     this.state.posImageDesc.forEach(desc =>
-        pos+=desc[0].description  )
      let neg = ''
+     this.state.posImageDesc.forEach(desc =>
+        pos+=desc[0].description + ' ' )
     this.state.negImageDesc.forEach(desc =>
-        neg+=desc[0].description )
+        neg+=desc[0].description+ ' ' )
+    pos=pos.trim()
+    neg=neg.trim()
+     alert(pos)
+     alert(neg)
     socket.emit('calculateWord',{pos:pos,neg:neg});
     if(!init){
       socket.on("wordResult", data => {
-        alert("Received data", data)
+        alert("Received data")
+        data = data.split(" ")[0];
         this.setState({word:data})
         this.search(data)
       });
