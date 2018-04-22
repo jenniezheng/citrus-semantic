@@ -12,8 +12,9 @@ var spawn = require('child_process').spawn
 var index = require('./routes/index');
 
 
-const Combinator = require('./combinator.js')
-const combinator = new Combinator()
+// const Combinator = require('./combinator.js')
+// const combinator = new Combinator()
+// console.log(combinator.combine("water", "grape", 6))
 
 
 // view engine setup
