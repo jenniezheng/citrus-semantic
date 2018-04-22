@@ -8,12 +8,12 @@ let init = false;
 import firebase from 'firebase'
 
 const config = {
-    apiKey: "AIzaSyDblTESEB1SbAVkpy2q39DI2OHphL2-Jxw",
-    authDomain: "fun-food-friends-eeec7.firebaseapp.com",
-    databaseURL: "https://fun-food-friends-eeec7.firebaseio.com",
-    projectId: "fun-food-friends-eeec7",
-    storageBucket: "fun-food-friends-eeec7.appspot.com",
-    messagingSenderId: "144750278413"
+    apiKey: "AIzaSyBBdY1PTGPFSivd0qO6Eh_sZwoiBXTq9eE",
+    authDomain: "myawesomeproject-74d03.firebaseapp.com",
+    databaseURL: "https://myawesomeproject-74d03.firebaseio.com",
+    projectId: "myawesomeproject-74d03",
+    storageBucket: "myawesomeproject-74d03.appspot.com",
+    messagingSenderId: "727493500579"
 };
 firebase.initializeApp(config);
 
