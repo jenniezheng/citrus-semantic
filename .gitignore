@@ -4,3 +4,4 @@ data/glove*
 data/nounlist.txt
 data/convertvec
 node_modules
+long3.bin
