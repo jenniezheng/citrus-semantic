@@ -2,7 +2,7 @@ import word2vec
 import sys
 #word2vec.word2phrase('/home/jbunie/Downloads/text8', '/home/jbunie/Downloads/text8-phrases', verbose=True)
 
-model = word2vec.load('/home/jbunie/citrus/data/convertvec/long3.bin')
+model = word2vec.load('./long3.bin')
 while True:
     posi = raw_input().split(' ')
     negi = raw_input().split(' ')

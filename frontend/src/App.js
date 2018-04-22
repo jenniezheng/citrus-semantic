@@ -11,7 +11,7 @@ import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 import RaisedButton from 'material-ui/RaisedButton';
 import 'semantic-ui-css/semantic.min.css';
 //import injectTapEventPlugin from 'react-tap-event-plugin';
-import { Grid,Container,Responsive,Segment } from 'semantic-ui-react'
+import { Grid,Container,Responsive,Segment,Button } from 'semantic-ui-react'
 
 const gridStyles = {
   root: {
@@ -172,9 +172,12 @@ class ImageVersion extends Component {
                 </GridList>
               </Grid.Column>
 
-              <Grid.Column tablet={6} computer={6} style={{'marginTop':'3vh'}}>
-                <Subheader style={{fontSize : '4em', textAlign : 'center'}}>{this.state.word}</Subheader>
-                <img style={imgStyle} src={this.state.image3}/>
+              <Grid.Column tablet={6} computer={6} textAlign="center" style={{"margin":"auto", "display":"flex", "alignItems":"center"}}>
+                <div>
+                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>{this.state.word}</Subheader>
+                  <img style={imgStyle} src={this.state.image3}/>
+                  <Button content="Submit" circular size="massive" fluid onClick={this.getAnalogy.bind(this)}/>
+                </div>
               </Grid.Column>
 
               <Grid.Column tablet={5} computer={5}  style={{'marginTop':'3vh'}}>
@@ -186,7 +189,7 @@ class ImageVersion extends Component {
                       key={desc[0].description+'neg'+index}
                       title={desc[0].description}
                       actionIcon={<IconButton><StarBorder color="white" /></IconButton>} >
-                      <img  src={this.state.negImageUrl[index]} />
+                      <img src={this.state.negImageUrl[index]} />
                     </GridTile>
                   )}
                 </GridList>
@@ -199,8 +202,8 @@ class ImageVersion extends Component {
                 <RaisedButton primary={true}  fullWidth={true} ><input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'pos') }/></RaisedButton>
               </Grid.Column>
 
-              <Grid.Column  tablet={6} computer={6} style={{'marginTop':'3vh'}}>
-                <RaisedButton label="Submit" fullWidth={true} secondary={true} onClick={this.getAnalogy.bind(this)}/>
+              <Grid.Column tablet={6} computer={6} style={{'marginTop':'3vh'}}>
+                
               </Grid.Column>
 
               <Grid.Column tablet={5} computer={5} style={{'marginTop':'3vh'}}>
@@ -240,11 +243,11 @@ class ImageVersion extends Component {
                     key={desc[0].description+'neg'+index}
                     title={desc[0].description}
                     actionIcon={<IconButton><StarBorder color="white" /></IconButton>} >
-                    <img  src={this.state.negImageUrl[index]} />
+                    <img src={this.state.negImageUrl[index]} />
                   </GridTile>
                 )}
               </GridList>
-              <RaisedButton primary={true} fullWidth={true} ><input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'neg') }/></RaisedButton>
+              <RaisedButton primary={true} fullWidth={true}><input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'neg') }/></RaisedButton>
             </Grid.Row>
           </Grid>
         </Responsive>

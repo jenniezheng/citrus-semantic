@@ -49,34 +49,33 @@ app.use(function(err, req, res, next) {
 });
 
 
-io.sockets.on('connection', function (socket) {
-  var py = spawn('python', ['python/analogy.py']);
-  py.stdin.setEncoding('utf-8');
+var py = spawn('python', ['python/analogy.py']);
+console.log("Hi!\n");
+py.stdin.setEncoding('utf-8');
 
-  socket.on('calculateWord' , function (res) {
+io.sockets.on('connection', function (socket) {
+  console.log("new connection")
+  socket.on('calculateWord', function (res) {
     console.log("calculating")
     console.log(res)
     py.stdin.write(res['pos']+'\n');
     py.stdin.write(res['neg']+'\n');
   });
   py.stdout.on('end', function(){
-      console.log("Exited")
+    console.log("Exited")
   });
   py.stderr.on('data', function(data){
-      result=data.toString();
-      console.log("error: "+result);
+    result=data.toString();
+    console.log("error: "+result);
   });
   py.stdout.on('data', function(data){
-      result=data.toString();
-      console.log("result: "+result);
-      socket.emit('wordResult', result);
-   });
-/*
-   socket.on('disconnect', function () {
-      py.stdin.pause();
-      py.kill();
+    result=data.toString();
+    console.log("result: "+result);
+    socket.emit('wordResult', result);
   });
-*/
+  socket.on('disconnect', function () {
+    console.log("closed connection")
+  });
 });
 
 
