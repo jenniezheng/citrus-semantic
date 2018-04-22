@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import lime from './sub-lime.png';
 import './App.css';
 import openSocket from 'socket.io-client';
 import { Route, Switch } from 'react-router'
@@ -157,7 +158,7 @@ class ImageVersion extends Component {
           <Grid>
             <Grid.Row>
 
-              <Grid.Column tablet={5} computer={5} style={{'marginTop':'3vh'}}>
+              <Grid.Column width={4} style={{'marginTop':'3vh'}}>
                 <GridList cols={1} cellHeight={180} style={gridStyles.gridList}>
                   <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Positive</Subheader>
                   {this.state.posImageDesc &&
@@ -172,15 +173,13 @@ class ImageVersion extends Component {
                 </GridList>
               </Grid.Column>
 
-              <Grid.Column tablet={6} computer={6} textAlign="center" style={{"margin":"auto", "display":"flex", "alignItems":"center"}}>
-                <div>
-                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>{this.state.word}</Subheader>
-                  <img style={imgStyle} src={this.state.image3}/>
-                  <Button content="Submit" circular size="massive" fluid onClick={this.getAnalogy.bind(this)}/>
-                </div>
+              <Grid.Column width={2} textAlign="center" style={{"margin":"auto", "display":"flex", "alignItems":"center"}}>
+                <button style={{"background":"none","border":"none"}} onClick={this.getAnalogy.bind(this)}>
+                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>-</Subheader>
+                </button>
               </Grid.Column>
 
-              <Grid.Column tablet={5} computer={5}  style={{'marginTop':'3vh'}}>
+              <Grid.Column width={4}  style={{'marginTop':'3vh'}}>
                 <GridList cols={1} cellHeight={180} style={gridStyles.gridList}>
                   <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Negative</Subheader>
                   {this.state.negImageDesc &&
@@ -195,20 +194,47 @@ class ImageVersion extends Component {
                 </GridList>
               </Grid.Column>
 
+              <Grid.Column width={2} textAlign="center" style={{"margin":"auto", "display":"flex", "alignItems":"center"}}>
+                <div>
+                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>=</Subheader>
+                </div>
+              </Grid.Column>
+
+              <Grid.Column width={4} textAlign="center" style={{"margin":"auto", "display":"flex", "alignItems":"center"}}>
+                <div>
+                  <Subheader style={{fontSize : '4em', textAlign : 'center'}}>{this.state.word}</Subheader>
+                  <img style={imgStyle} src={this.state.image3}/>
+                </div>
+              </Grid.Column>
+
             </Grid.Row>
 
             <Grid.Row>
-              <Grid.Column tablet={5} computer={5} style={{'marginTop':'3vh'}}>
-                <RaisedButton primary={true}  fullWidth={true} ><input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'pos') }/></RaisedButton>
+              <Grid.Column width={4} style={{'marginTop':'3vh'}}>
+                <RaisedButton primary={true}  fullWidth={true} >
+                  <label class = "uploadbutton" >
+                    <input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'pos') }/>
+                    Add Photo
+                  </label>
+                </RaisedButton>
               </Grid.Column>
 
-              <Grid.Column tablet={6} computer={6} style={{'marginTop':'3vh'}}>
-                
+              <Grid.Column width={2} />
+
+              <Grid.Column width={4} style={{'marginTop':'3vh'}}>
+                <RaisedButton primary={true}  fullWidth={true} >
+                  <label class = "uploadbutton" >
+                    <input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'neg') }/>
+                    Add Photo
+                  </label>
+                </RaisedButton>
+              </Grid.Column>
+              
+              <Grid.Column width={2} />
+
+              <Grid.Column width={4} style={{'marginTop':'3vh'}}>
               </Grid.Column>
 
-              <Grid.Column tablet={5} computer={5} style={{'marginTop':'3vh'}}>
-                <RaisedButton primary={true} fullWidth={true} ><input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'neg') }/></RaisedButton>
-              </Grid.Column>
             </Grid.Row>
           </Grid>
         </Responsive>
@@ -234,7 +260,7 @@ class ImageVersion extends Component {
                 )}
               </GridList>
             </Grid.Row>
-            <Grid.Row >
+            <Grid.Row>
               <GridList cols={1} cellHeight={180} style={gridStyles.gridList}  >
                 <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Negative</Subheader>
                 {this.state.negImageDesc &&

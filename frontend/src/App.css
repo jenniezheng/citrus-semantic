@@ -4,7 +4,7 @@
 
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+  height: 100px;
 }
 
 .App-header {
@@ -20,6 +20,16 @@
 
 .App-intro {
   font-size: large;
+}
+
+.uploadbutton {
+  width: 100%;
+  display: inline-block;
+  cursor: pointer;
+}
+
+input[type="file"] {
+    display: none;
 }
 
 @keyframes App-logo-spin {

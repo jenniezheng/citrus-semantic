@@ -48,13 +48,14 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-
+var numcons = 0;
 var py = spawn('python', ['python/analogy.py']);
 console.log("Hi!\n");
 py.stdin.setEncoding('utf-8');
 
 io.sockets.on('connection', function (socket) {
-  console.log("new connection")
+  numcons++;
+  console.log("connection" , numcons);
   socket.on('calculateWord', function (res) {
     console.log("calculating")
     console.log(res)
@@ -74,7 +75,8 @@ io.sockets.on('connection', function (socket) {
     socket.emit('wordResult', result);
   });
   socket.on('disconnect', function () {
-    console.log("closed connection")
+    numcons--;
+    console.log("closed connection, curr: ", numcons)
   });
 });
 
