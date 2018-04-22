@@ -35,9 +35,10 @@ const config = {
   storageBucket: "myawesomeproject-74d03.appspot.com",
   messagingSenderId: "727493500579"
 };
+
 firebase.initializeApp(config);
 const storage = firebase.storage().ref()
-const socket = openSocket('http://localhost:3000');
+const socket = openSocket('http://8e451f3e.ngrok.io/');
 let init = false;
 
 class ImageVersion extends Component {
@@ -228,6 +229,10 @@ class ImageVersion extends Component {
                 </RaisedButton>
               </Grid.Column>
 
+<<<<<<< HEAD
+              <Grid.Column tablet={6} computer={6} style={{'marginTop':'3vh'}}>
+
+=======
               <Grid.Column width={2} />
 
               <Grid.Column width={4} style={{'marginTop':'3vh'}}>
@@ -237,6 +242,7 @@ class ImageVersion extends Component {
                     Add Photo
                   </label>
                 </RaisedButton>
+>>>>>>> 051f13c7c4b9a33ec755c2924dec3ec70a8122ed
               </Grid.Column>
               
               <Grid.Column width={2} />
