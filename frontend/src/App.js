@@ -30,7 +30,7 @@ class ImageVersion extends Component {
         }
 
       this.getImage('downloadarrow')
-
+/*
       const file = document.querySelector('#photo').files[0]
       const name = "temp.png";
       const metadata = {
@@ -44,6 +44,7 @@ class ImageVersion extends Component {
         }).catch((error) => {
           console.error(error);
         });
+        */
 
     }
     getImage (image) {
