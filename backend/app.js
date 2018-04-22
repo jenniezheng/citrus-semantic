@@ -12,6 +12,11 @@ var spawn = require('child_process').spawn
 var index = require('./routes/index');
 
 
+// const Combinator = require('./combinator.js')
+// const combinator = new Combinator()
+// console.log(combinator.combine("water", "grape", 6))
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
