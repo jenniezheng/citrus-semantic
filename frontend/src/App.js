@@ -40,94 +40,90 @@ const socket = openSocket('http://localhost:3000');
 let init = false;
 
 class ImageVersion extends Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        word: "",
-        posImageDesc:[],
-        posImageUrl:[],
-        posCount:0,
-        negImageDesc:[],
-        negImageUrl:[],
-        negCount:0,
-        image3:''
-        }
+  constructor(props) {
+    super(props);
+    this.state = {
+      word: "",
+      posImageDesc:[],
+      posImageUrl:[],
+      posCount:0,
+      negImageDesc:[],
+      negImageUrl:[],
+      negCount:0,
+      image3:''
     }
+  }
 
-    updateFirebase = (type, e) => {
-      let file = e.target.files[0]
-      if(!file)
-        return
-      const name = "uploadimage"+this.state.posCount;
-      const metadata = {
-         contentType: file.type
-      };
-      let { state } = this
-      if(!file)
-        return
+  updateFirebase = (type, e) => {
+    let file = e.target.files[0]
+    if(!file)
+      return
+    const name = "uploadimage"+this.state.posCount;
+    const metadata = {
+       contentType: file.type
+    };
+    let { state } = this
+    if(!file)
+      return
     try {
-        const task = storage.child(name).put(file, metadata);
-        task.then((snapshot) => {
-          const url = snapshot.downloadURL;
-          console.log(url);
-          state[type+'ImageUrl'].push(url)
-          state[type+'Count']+=1;
-          this.setState(state)
-          this.describeImage(type, e);
-        }).catch((error) => {
-          console.error(error);
-        });
+      const task = storage.child(name).put(file, metadata);
+      task.then((snapshot) => {
+        const url = snapshot.downloadURL;
+        console.log(url);
+        state[type+'ImageUrl'].push(url)
+        state[type+'Count']+=1;
+        this.setState(state)
+        this.describeImage(type, e);
+      }).catch((error) => {
+        console.error(error);
+      });
     }
-        catch(e){
-            console.log("Found upload error")
-        }
+    catch(e){
+        console.log("Found upload error")
     }
+  }
 
 
-    describeImage = (type, e) => {
-        let arrtype = this.state[type+'ImageUrl'];
+  describeImage = (type, e) => {
+    let arrtype = this.state[type+'ImageUrl'];
 
-        let req= {
-        "requests": [
-            {
-              "image": {
-                "source": {
-                  "imageUri": arrtype[arrtype.length-1]
-                }
-              },
-              "features": [
-                {
-                  "type": "LABEL_DETECTION",
-                   "maxResults":4
-                }
-              ]
-            }
-          ]
-        }
-        fetch('https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDZnJDd_m3NXTSUCjThtmNigbMMrZiepME', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(req)
-        })
-        .then(response => response.json())
-        .then(json =>{
-            let arr = json['responses'][0]['labelAnnotations'];
-            let { state } = this
-            state[type+'ImageDesc'].push(arr)
-            this.setState(state)
-          })
-        .catch(error => console.log(error));
+    let req= {
+      "requests": [{
+        "image": {
+          "source": {
+            "imageUri": arrtype[arrtype.length-1]
+          }
+        },
+        "features": [{
+          "type": "LABEL_DETECTION",
+           "maxResults": 4
+        }]
+      }]
     }
+    fetch('https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDZnJDd_m3NXTSUCjThtmNigbMMrZiepME', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(req)
+    })
+    .then(response => response.json())
+    .then(json => {
+        let arr = json['responses'][0]['labelAnnotations'];
+        let { state } = this
+        state[type+'ImageDesc'].push(arr)
+        this.setState(state)
+      })
+    .catch(error => console.log(error));
+  }
 
 
   search = (term) => {
     fetch('https://www.googleapis.com/customsearch/v1?key=AIzaSyCVNcHkdrsOsgzmpgCWtr_4tPcEo2-U2kk&cx=002590090237152809819:yqtwpa9qvr0&q='+term+'&searchType=image')
     .then(response => response.json())
     .then(myJson => {
-      if(myJson.items){
+      if(myJson.items) {
         let image3 = myJson.items[0].link;
         this.setState({image3});
         console.log(image3);
@@ -135,21 +131,20 @@ class ImageVersion extends Component {
     });
   }
 
-   getAnalogy = (e) => {
-    let pos = ''
-    let neg = ''
-    this.state.posImageDesc.forEach(desc =>
-        pos+=desc[0].description + ' ' )
-    this.state.negImageDesc.forEach(desc =>
-        neg+=desc[0].description+ ' ' )
-    pos=pos.trim()
-    neg=neg.trim()
+
+  getAnalogy = (e) => {
+    let pos = '';
+    let neg = '';
+    this.state.posImageDesc.forEach(desc => pos+=desc[0].description+' ');
+    this.state.negImageDesc.forEach(desc => neg+=desc[0].description+' ');
+    pos=pos.trim();
+    neg=neg.trim();
     socket.emit('calculateWord',{pos:pos,neg:neg});
     if(!init){
       socket.on("wordResult", data => {
         data = data.split(" ")[0];
-        this.setState({word:data})
-        this.search(data)
+        this.setState({word:data});
+        this.search(data);
       });
       init = true;
     }
@@ -261,6 +256,7 @@ class ImageVersion extends Component {
 
 
   </Container>
+
     );
   }
 }
