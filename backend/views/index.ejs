@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title> Classy </title>
+  <!-- Bootstrap css -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<!-- Bootstrap js -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+
+
+<div id="header_box">
+ <h1> Classy Bot </h1>
+ <button id="about_button" data-toggle="collapse" data-target="#about">Help/About</button>
+ </div>
+<div "about_box">
+<div id="about" class="collapse">
+<h4>Video Streaming Issues?</h4>
+<ul>
+<li>Make sure your device has a camera</li>
+<li>Visit this site on a modern version of Google-Chrome or Firefox
+</li>
+<li>Give this site permission to use your camera</li>
+</ul>
+<h4>Application Info</h4>
+This application is built with Node.js and Python. The client uses websockets to send images over to the server, and the server spawns child python processes to run forward propagation through inception's pretrained neural network via Tensorflow. The python process returns the results to the server, which forwards the results back to the client via websockets.
+<h4>Inception Model</h4>
+The backend tensorflow application heavily utilizes inception's pretrained image classification model. The model is trained on 3000 classes of objects and animals, but unfortunately, is not trained on humans. If you tried directing the camera at yourself, I appoligize for whatever the model labeled you as.
+</div>
+
+
+  <div id="labels_box">
+  <div id="labels">
+  <label>Hello, I'm classy bot, and I'm going to recognize objects on your camera.</label>
+  <label>Please give me permission to access your camera and turn on your speaker. </label>
+  <label>Then wait about 20 seconds for me to start!</label>
+  </div>
+  </div>
+  <div id="video_box">
+  <video id="video" autoplay="autoplay">Video stream not available on your browser. Try an updated version of chrome or firefox.</video>
+  </div>
+  <!--- Hidden canvas for photo copying only -->
+  <canvas id="canvas" width="512" height="512"></canvas>
+  <!--- Built in to client by socket.io -->
+  <script src="/socket.io/socket.io.js"></script>
+  <!--- client code -->
+  <script src="/javascripts/client.js"></script>
+</script>
+</body>
+
+</html>

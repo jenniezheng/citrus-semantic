@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title> Classy </title>
+  <!-- Bootstrap css -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<!-- Bootstrap js -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <!--- client code -->
+  <script src="/javascripts/analogy.js"></script>
+
+<script>
+var socket;
+
+var target = 'http://localhost:3000'
+socket = io.connect(target);
+
+var init=false;
+
+function check(){
+    pos=document.getElementById('pos').value;
+    neg=document.getElementById('neg').value;
+    socket.emit('calculateWord',{pos:pos,neg:neg});
+    if(!init){
+        socket.on("wordResult", function (data){
+            alert(data);
+        });
+        init = true;
+    }
+}
+
+</script>
+
+
+<form action="#" onsubmit="check();">
+  Pos: <input type="text" id="pos" value="cat dog" /><br/>
+  Neg: <input type="text" id="neg" value="prince" /><br/>
+  <input type="submit" value="Submit"/>
+</form>
+
+
+</body>
+
+
+</html>
