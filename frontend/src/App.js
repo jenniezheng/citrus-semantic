@@ -26,47 +26,101 @@ class ImageVersion extends Component {
       super(props);
       this.state = {
         word: "",
-        downloadarrow: '',
+        uploadimage1:'',
+        wordsimage1:[],
+        uploadimage2:'',
+        wordsimage2:[]
         }
+    }
 
-      this.getImage('downloadarrow')
-/*
-      const file = document.querySelector('#photo').files[0]
-      const name = "temp.png";
+    updateImage(num,e) {
+      let file = e.target.files[0]
+      const name = "uploadimage"+num;
+      this.setState({file:file})
+
       const metadata = {
          contentType: file.type
       };
+      let { state } = this
       const task = storage.child(name).put(file, metadata);
         task.then((snapshot) => {
           const url = snapshot.downloadURL;
           console.log(url);
-          document.querySelector('#someImageTagID').src = url;
+          state[name] = url
+          this.setState(state)
         }).catch((error) => {
           console.error(error);
         });
-        */
-
     }
-    getImage (image) {
-        let { state } = this
-        storage.child(`${image}.png`).getDownloadURL().then((url) => {
-          state[image] = url
-          this.setState(state)
-        }).catch((error) => {
-          // Handle any errors
+
+    googleRecognizeImage(num,e,url){
+        let req= {
+        "requests": [
+            {
+              "image": {
+                "source": {
+                  "imageUri": url
+                }
+              },
+              "features": [
+                {
+                  "type": "LABEL_DETECTION",
+                   "maxResults":4
+                }
+              ]
+            }
+          ]
+        }
+        fetch('https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDZnJDd_m3NXTSUCjThtmNigbMMrZiepME', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(req)
         })
+        .then(response => response.json())
+        .then(json =>{
+            let arr = json['responses'][0]['labelAnnotations'];
+            let { state } = this
+            state['wordsimage'+num] = arr
+            this.setState(state)
+          })
+        .catch(error => console.log(error));
+    }
+
+
+    uploadImage(num,e){
+        this.updateImage(num,e);
+        this.getImage(num,e);
+    }
+
+    getImage (num,e) {
+        let { state } = this
+        storage.child('uploadimage'+num).getDownloadURL().then( url =>
+            this.googleRecognizeImage(num,e,url))
     }
 
   render() {
     return (
       <div >
-       <img src={this.state.downloadarrow}/>
+      { this.state.wordsimage1.map(word => { return ( <p > {word.description}  </p> );}) }
+
+       <img src={this.state.uploadimage1}/>
+      <input type="file" onChange={ this.uploadImage.bind(this, '1') }/>
+
+      { this.state.wordsimage2.map(word => { return ( <p > {word.description}  </p> );}) }
+       <img src={this.state.uploadimage2}/>
+      <input type="file" onChange={ this.uploadImage.bind(this, '2') }/>
         <h2 >{this.state.word}</h2>
-        <h2 >HERE</h2>
+        <button onClick={ this.googleRecognizeImage.bind(this, '1')} >Submit</button>
       </div>
     );
   }
 }
+
+//custom search :
+// AIzaSyCVNcHkdrsOsgzmpgCWtr_4tPcEo2-U2kk
 /*
 
 class TextVersion extends Component {
