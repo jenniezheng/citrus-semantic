@@ -7,9 +7,11 @@ import {GridList, GridTile} from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
 import Subheader from 'material-ui/Subheader';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+
+import RaisedButton from 'material-ui/RaisedButton';
 import 'semantic-ui-css/semantic.min.css';
 //import injectTapEventPlugin from 'react-tap-event-plugin';
-import { Grid } from 'semantic-ui-react'
+import { Grid,Container } from 'semantic-ui-react'
 
 const gridStyles = {
   root: {
@@ -61,7 +63,10 @@ class ImageVersion extends Component {
          contentType: file.type
       };
       let { state } = this
-      const task = storage.child(name).put(file, metadata);
+      if(!file)
+        return
+    try {
+        const task = storage.child(name).put(file, metadata);
         task.then((snapshot) => {
           const url = snapshot.downloadURL;
           console.log(url);
@@ -72,6 +77,10 @@ class ImageVersion extends Component {
         }).catch((error) => {
           console.error(error);
         });
+    }
+        catch(e){
+            console.log("Found upload error")
+        }
     }
 
 
@@ -127,7 +136,6 @@ class ImageVersion extends Component {
   }
 
    getAnalogy = (e) => {
-     alert("getting analogy");
      let pos = ''
      let neg = ''
      this.state.posImageDesc.forEach(desc =>
@@ -136,12 +144,9 @@ class ImageVersion extends Component {
         neg+=desc[0].description+ ' ' )
     pos=pos.trim()
     neg=neg.trim()
-     alert(pos)
-     alert(neg)
     socket.emit('calculateWord',{pos:pos,neg:neg});
     if(!init){
       socket.on("wordResult", data => {
-        alert("Received data")
         data = data.split(" ")[0];
         this.setState({word:data})
         this.search(data)
@@ -151,47 +156,54 @@ class ImageVersion extends Component {
   }
 
   render() {
+    let imgStyle={
+        width: '100%'
+    }
     return (
+     <Container >
     <Grid >
-    <Grid.Row>
-      <Grid.Column mobile={16} tablet={16} computer={5}>
-        <GridList cellHeight={180} style={gridStyles.gridList}  >
+    <Grid.Row >
+      <Grid.Column mobile={16} tablet={16} computer={5} style={{'marginTop':'3vh'}}>
+        <GridList cols={1} cellHeight={180} style={gridStyles.gridList}  >
 
-        <Subheader>Positive</Subheader>
+        <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Positive</Subheader>
             { this.state.posImageDesc.map( (desc,index) =>
                 <GridTile
                   key={desc[0].description+'pos'+index}
                   title={desc[0].description}
                   actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
                 >
-                  <img style={{width:'300px'}} src={this.state.posImageUrl[index]} />
+                  <img style={imgStyle} src={this.state.posImageUrl[index]} />
                 </GridTile>
             )}
       </GridList>
-      <input type="file" onChange={ this.updateFirebase.bind(this,'pos') }/>
+      <RaisedButton primary={true}  fullWidth={true} ><input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'pos') }/></RaisedButton>
+
       </Grid.Column>
-      <Grid.Column mobile={16} tablet={16} computer={5}>
-        <h2 >{this.state.word}</h2>
-        <img style={{width:'300px'}} src={this.state.image3}/>
-        <button onClick={this.getAnalogy.bind(this)}>Submit</button>
+      <Grid.Column mobile={16} tablet={16} computer={6} style={{'marginTop':'3vh'}}>
+        <Subheader style={{fontSize : '4em', textAlign : 'center'}}>{this.state.word}</Subheader>
+        <img style={imgStyle}  src={this.state.image3}/>
+        <RaisedButton label="Submit" fullWidth={true} secondary={true} onClick={this.getAnalogy.bind(this)}/>
       </Grid.Column>
-      <Grid.Column mobile={16} tablet={16} computer={5}>
-          <GridList cellHeight={180} style={gridStyles.gridList}  >
-          <Subheader>Negative</Subheader>
+      <Grid.Column mobile={16} tablet={16} computer={5} style={{'marginTop':'3vh'}}>
+          <GridList cols={1} cellHeight={180} style={gridStyles.gridList}  >
+        <Subheader style={{fontSize : '4em', textAlign : 'center'}}>Negative</Subheader>
             { this.state.negImageDesc.map( (desc,index) =>
                 <GridTile
                   key={desc[0].description+'neg'+index}
                   title={desc[0].description}
                   actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
                 >
-                  <img style={{width:'300px'}} src={this.state.negImageUrl[index]} />
+                  <img style={imgStyle} src={this.state.negImageUrl[index]} />
                 </GridTile>
             )}
       </GridList>
-      <input type="file" onChange={ this.updateFirebase.bind(this,'neg') }/>
+      <RaisedButton primary={true} fullWidth={true} ><input type="file" accept="image/*" onChange={ this.updateFirebase.bind(this,'neg') }/></RaisedButton>
+
       </Grid.Column>
     </Grid.Row>
   </Grid>
+  </Container>
     );
   }
 }
