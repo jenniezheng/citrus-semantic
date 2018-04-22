@@ -4,12 +4,9 @@ var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var fs = require('fs');
-var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-
 var spawn = require('child_process').spawn
 var index = require('./routes/index');
+var http = require('http')
 
 
 // const Combinator = require('./combinator.js')
@@ -18,35 +15,21 @@ var index = require('./routes/index');
 
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
 
-app.use(favicon(path.join(__dirname, 'public', 'images/robot.png')));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+var server = http.createServer(function (req, res) {
 
-app.use('/', index);
-
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+  var headers = {};
+  headers["Access-Control-Allow-Origin"] = "*";
+  headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS";
+  headers["Access-Control-Allow-Credentials"] = true;
+  headers["Access-Control-Max-Age"] = '86400'; // 24 hours
+  headers["Access-Control-Allow-Headers"] = "X-Requested-With, Access-Control-Allow-Origin, X-HTTP-Method-Override, Content-Type, Authorization, Accept";
+  res.writeHead(200, headers);
+  res.end();
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+var io = require('socket.io')(server);
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
 
 
 var py = spawn('python', ['python/analogy.py']);
